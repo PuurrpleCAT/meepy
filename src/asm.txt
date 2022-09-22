@@ -2,4 +2,5 @@
   i: .word 1,2,3
   j: .byte 4
 .text
-  addiu $t0, 1
+main:
+  addiu $t0, $zero, 1
