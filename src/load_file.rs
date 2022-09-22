@@ -1,6 +1,7 @@
 use std::sync::mpsc::Sender;
 use std::fs::File;
 use std::io::{BufReader, BufRead};
+// todo:
 pub fn read(s: Sender<String>) {
     let f: File = File::open("src/asm.txt").unwrap(); 
     let f = BufReader::new(f);
@@ -22,8 +23,10 @@ pub fn read(s: Sender<String>) {
             s.send(l.to_string()).unwrap();
         }
     }
-    s.send(".data".to_string()).unwrap();
-    for line in data_vec {
-        s.send(line).unwrap();
+    if data_vec.len() > 0 {
+        s.send(".data".to_string()).unwrap();
+        for line in data_vec {
+            s.send(line).unwrap();
+        }
     }
 }

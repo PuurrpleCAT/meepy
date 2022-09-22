@@ -15,8 +15,12 @@ pub fn convert_and_store(s: String, memory: &mut HashMap<u32, u32>, labels: &mut
             return
         }
         let b = to_bin::convert(s);   
+        if let Some(_) = memory.insert(unsafe{PROGRAM_ADDRESS}, b) {
+            panic!("Thou hast tried to defenestrate instruction");
+        }
         unsafe {PROGRAM_ADDRESS += 32};
     } else {
+        println!("{}", s);
         todo!() // <-- the .data section of program
     }
 }

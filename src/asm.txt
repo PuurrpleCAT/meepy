@@ -1,6 +1,5 @@
-.data
-  i: .word 1,2,3
-  j: .byte 4
-.text
+  .text
 main:
-  addiu $t0, $zero, 1
+  addiu $t0, $zero, 1  
+  addiu $v0, $zero, 10
+  syscall
