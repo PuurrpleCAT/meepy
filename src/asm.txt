@@ -1,5 +1,10 @@
   .text
+L1:
+  addiu $t1, $zero, 1  
 main:
-  addiu $t0, $zero, 1  
+  addiu $t0, $zero, 2  
   addiu $v0, $zero, 10
   syscall
+L2:
+  addiu $t2, $zero, 3
+  addiu $v1, $zero, 11
