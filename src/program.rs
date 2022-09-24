@@ -12,7 +12,6 @@ use std::collections::HashMap;
 // a vec of instructions as a string in order in file (without labels)
 pub fn init(memory: &mut HashMap<u32, u32>, label_addr: &mut HashMap<String, u32>) -> Vec<String> {
     get_label_addr(label_addr);
-    println!("{:?}", label_addr);
     let (sender, receiver): (Sender<String>, Receiver<String>) = channel();
     let handle = thread::spawn(|| {
         load_file::read(sender)
