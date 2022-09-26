@@ -29,20 +29,24 @@ impl Registers {
             r,
         } 
     }
+    // creates register hashmap
     fn init(h: &mut HashMap<u8, u32>) {
         for r in 0..32 {
             h.insert(r, 0);
         }
     }
+    // initialise the pc counter
     fn init_start_addr(&mut self, label: &HashMap<String, u32>) {
         self.r.insert(32, *label.get(&"main:".to_string()).unwrap());
     }
+    // helper get and update functions to keep registers field private
     pub fn get(&self, u: u8) -> u32 {
         *self.r.get(&u).unwrap()
     }
     pub fn update(&mut self, u: u8, x: u32) {
         self.r.insert(u, x);
     }
+    // prints registers with proper register names, in 4 groups of hexadigit pairs
     pub fn print(&mut self) {
         let mut keys: Vec<&u8> = self.r.keys().collect(); 
         keys.sort_unstable();
@@ -65,6 +69,7 @@ impl Registers {
             }
         }
     }
+    // the function that makes the 4 groups of hexadigit pairs
     fn bin_to_hex(u: u32) -> String {
         let hex = format!("{:08x}", u);
         hex.chars()
@@ -74,6 +79,8 @@ impl Registers {
            .collect::<String>()
     }
 }
+// helper exit function to reset the cursor position, as before it would overwrite the
+// printed registers (as cursor position was like (32, 2)). Resets it to bottom of the terminal
 pub fn exit(s: &str) -> ! {
     use crossterm::{execute, terminal::size, cursor::MoveTo};
     use std::io::stdout;

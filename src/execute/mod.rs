@@ -18,6 +18,7 @@ pub fn x(m: &mut HashMap<u32, u32>, instructions: Vec<String>, registers: &mut R
         std::io::stdin().read_line(&mut buf).unwrap();
     }
 }
+// move commands to print registers and current executed instruction
 fn print_everything(r: &mut Registers, s: &mut Stdout, b: u32, i: &Vec<String>, addr: u32) -> Result<()> {
     execute!(s, MoveTo(0, 0))?;
     r.print(); 
@@ -25,9 +26,10 @@ fn print_everything(r: &mut Registers, s: &mut Stdout, b: u32, i: &Vec<String>, 
     print(s, b, i, addr)?;
     execute!(s, MoveTo(30, 2))
 }
+// prints the instrution and its binary format
 fn print(s: &mut Stdout, b: u32, i: &Vec<String>, addr: u32) -> Result<()> {
     let fmt = u32_to_bit_fmt(b);
-    println!("{}", i[(addr/32) as usize]);
+    println!("{}", i[(addr/32) as usize]); // this is a smart thing as the instructions in this vec are in the same order as the file, and so are the addresses in that same order, so we divide the address by 32 (as the instructions address are 0, 32, 64 ... ) to get the instruction index in the vec
     execute!(s, MoveTo(30, 1))?;
     println!("{:08x}   {}", addr, fmt); Ok(())
 }
