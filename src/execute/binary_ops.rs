@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use crate::execute::instructions::*;
 use crate::Registers;
+use crate::exit;
 
 // op rs rt rd shamt funct
 // op rs rd imm
@@ -8,7 +9,7 @@ pub fn run(registers: &mut Registers, memory: &mut HashMap<u32, u32>, u: u32) {
     let op = op(u);
     match op {
         9 => addiu(registers, r1(u), r2(u), im(u)),
-        _ => panic!("God's false words"),
+        _ => exit("God's false words"),
     }
 }
 

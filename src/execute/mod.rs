@@ -1,30 +1,37 @@
 use std::collections::HashMap;
+use std::io::{ stdout, Stdout };
 use crate::Registers;
+use crossterm::{execute, cursor::MoveTo, terminal::{Clear, ClearType}, Result};
 mod binary_ops;
 mod instructions;
 
 // with the address, we divide 32 to find its corresponding instruction in the vec
-pub fn x(m: &mut HashMap<u32, u32>, start_addr: u32, instructions: Vec<String>, registers: &mut Registers) {
-    let mut addr = start_addr;
+pub fn x(m: &mut HashMap<u32, u32>, instructions: Vec<String>, registers: &mut Registers) {
+    let mut stdout = stdout();
     for _ in 0..3 {
-        let b = *m.get(&addr).unwrap();
-        print(b, &instructions, addr);
+        let addr: u32 = registers.get(32u8);
+        let b: u32 = *m.get(&addr).unwrap();
         binary_ops::run(registers, m, b);
-        addr += 32;
+        execute!(stdout, Clear(ClearType::All)).unwrap();
+        print_everything(registers, &mut stdout, b, &instructions, addr).unwrap();
+        let mut buf = String::new();
+        std::io::stdin().read_line(&mut buf).unwrap();
     }
 }
-fn print_all(m: &mut HashMap<u32, u32>) {
-    let mut keys: Vec<&u32> = m.keys().collect();
-    keys.sort_unstable();
-    for i in keys {
-        let fmt = u32_to_bit_fmt(*m.get(&i).unwrap());
-        println!("{:08x}   {}", i, fmt);
-    }
+fn print_everything(r: &mut Registers, s: &mut Stdout, b: u32, i: &Vec<String>, addr: u32) -> Result<()> {
+    execute!(s, MoveTo(0, 0))?;
+    r.print(); 
+    execute!(s, MoveTo(30, 0))?;
+    print(s, b, i, addr)?;
+    execute!(s, MoveTo(30, 2))
 }
-fn print(b: u32, i: &Vec<String>, addr: u32) {
+fn print(s: &mut Stdout, b: u32, i: &Vec<String>, addr: u32) -> Result<()> {
     let fmt = u32_to_bit_fmt(b);
-    println!("           {}\n{:08x}   {}\n", i[(addr/32) as usize], addr, fmt);
+    println!("{}", i[(addr/32) as usize]);
+    execute!(s, MoveTo(30, 1))?;
+    println!("{:08x}   {}", addr, fmt); Ok(())
 }
+// put it into the 6 5 5 5 5 6 bit format
 fn u32_to_bit_fmt(u: u32) -> String {
     let bits: Vec<char> = format!("{:032b}", u).chars().collect();
     let s1: String = bits[..=5].iter().collect();
