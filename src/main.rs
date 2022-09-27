@@ -11,6 +11,9 @@ use std::collections::HashMap;
 // program::init also returns us the individual instructions in order as written in file
 // this makes it so we can print the line as we execute
 fn main() {
+    use crossterm::terminal::size;
+    let size = size().unwrap();
+    assert!(size.1 >= 35);
     let mut memory:     HashMap<u32, u32>    = HashMap::new();
     let mut label_addr: HashMap<String, u32> = HashMap::new();
     let mut registers:  Registers            = Registers::new();
@@ -45,6 +48,9 @@ impl Registers {
     }
     pub fn update(&mut self, u: u8, x: u32) {
         self.r.insert(u, x);
+    }
+    pub fn contains(&self, u: u8) -> bool {
+        self.r.contains_key(&u)
     }
     // prints registers with proper register names, in 4 groups of hexadigit pairs
     pub fn print(&mut self) {
@@ -86,6 +92,9 @@ pub fn exit(s: &str) -> ! {
     use std::io::stdout;
     let mut stdout = stdout();
     let size = size().unwrap();
-    execute!(stdout, MoveTo(0, size.1)).unwrap();
+    execute!(stdout, MoveTo(0, size.1 -2)).unwrap();
+    if s == "gracefully shut down" {
+        std::process::exit(0);
+    }
     panic!("{}", s)
 }

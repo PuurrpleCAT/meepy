@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::io::{ stdout, Stdout };
-use crate::Registers;
+use crate::{ Registers, exit };
 use crossterm::{execute, cursor::MoveTo, terminal::{Clear, ClearType}, Result};
 mod binary_ops;
 mod instructions;
@@ -8,19 +8,22 @@ mod instructions;
 // with the address, we divide 32 to find its corresponding instruction in the vec
 pub fn x(m: &mut HashMap<u32, u32>, instructions: Vec<String>, registers: &mut Registers) {
     let mut stdout = stdout();
+    execute!(stdout, Clear(ClearType::All)).unwrap(); 
     for _ in 0..3 {
         let addr: u32 = registers.get(32u8);
         let b: u32 = *m.get(&addr).unwrap();
         binary_ops::run(registers, m, b);
-        execute!(stdout, Clear(ClearType::All)).unwrap();
         print_everything(registers, &mut stdout, b, &instructions, addr).unwrap();
+        if registers.contains(101) {
+            exit("gracefully shut down"); 
+        }
         let mut buf = String::new();
         std::io::stdin().read_line(&mut buf).unwrap();
     }
 }
 // move commands to print registers and current executed instruction
-fn print_everything(r: &mut Registers, s: &mut Stdout, b: u32, i: &Vec<String>, addr: u32) -> Result<()> {
-    execute!(s, MoveTo(0, 0))?;
+pub fn print_everything(r: &mut Registers, s: &mut Stdout, b: u32, i: &Vec<String>, addr: u32) -> Result<()> {
+    execute!(s, MoveTo(0, 0), Clear(ClearType::Purge))?;
     r.print(); 
     execute!(s, MoveTo(30, 0))?;
     print(s, b, i, addr)?;

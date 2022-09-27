@@ -7,7 +7,7 @@ use std::collections::HashMap;
 pub fn convert(s: String, label_addr: &mut HashMap<String, u32>) -> u32 {
     let separate: Vec<&str> = s.split(' ').collect();
     let instruction: &str = separate[0];
-    let (op, func, mode): (u32, Option<u32>, u8) = op_codes::get_op_and_func(instruction);
+    let (op, func, mode): (u32, u32, u8) = op_codes::get_op_and_func(instruction);
     let mut binary: u32 = 0;
     binary += op << 26;
         if mode == 0 {        // R form   op rs rt rd shamt func
@@ -19,21 +19,22 @@ pub fn convert(s: String, label_addr: &mut HashMap<String, u32>) -> u32 {
             let rs = reg(&separate[2][..separate[2].len()-1]);
             let rd = reg(&separate[1][..separate[1].len()-1]);
             let imm = separate[3].parse::<u32>().unwrap();
-    binary |= rs << 21;
-    binary |= rd << 16;
-    binary |= imm;
+            binary |= rs << 21;
+            binary |= rd << 16;
+            binary |= imm;
         } else if mode == 2 { // J form op 26 bit address eg b
-
+            todo!()
         } else if mode == 3 { // idk form op rs rt? 16-bit address eg bgez or beq
-
+            todo!()
         } else if mode == 4 { // idk form 0 0 (for 20 bits) 12 or 0 for syscall or nop
-
+            binary |= func;            
         }
    binary 
 }
 fn reg(s: &str) -> u32 {
     match s {
         "$zero" => 0,
+        "$at"   => 1,
         "$v0"   => 2,
         "$v1"   => 3,
         "$a0"   => 4,
@@ -58,6 +59,8 @@ fn reg(s: &str) -> u32 {
         "$s7"   => 23,
         "$t8"   => 24,
         "$t9"   => 25,
+        "$k0"   => 26,
+        "$k1"   => 27,
         "$gp"   => 28,
         "$sp"   => 29,
         "$fp"   => 30,
