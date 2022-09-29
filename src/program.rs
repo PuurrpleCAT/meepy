@@ -30,9 +30,15 @@ fn get_label_addr(a: &mut HashMap<String, u32>) {
     let mut addr = 0;
     for l in f.lines() {
         let l = l.unwrap();
+        if l.len() == 0 {
+            continue
+        }
         let l = l.trim();
         if l == ".text" {
             in_text = 1;
+            continue
+        } else if l == ".data" {
+            in_text = 0;
             continue
         }
         if in_text == 1 {

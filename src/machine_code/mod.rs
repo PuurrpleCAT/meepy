@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 mod to_bin;
 mod op_codes;
+mod data;
 // global variables to keep state even though convert_and_store is called multiple times
 static mut IS_DATA: u8 = 0;
 static mut INSTRUCTION_ADDRESS: u32 = 0;
@@ -9,6 +10,7 @@ static mut INSTRUCTION_ADDRESS: u32 = 0;
 pub fn convert_and_store(s: String, memory: &mut HashMap<u32, u32>, label_addr: &mut HashMap<String, u32>) {
     if s == ".data" {
         unsafe {IS_DATA = 1};
+        return
     }
     if unsafe {IS_DATA == 0} {
         if s.chars().last().unwrap() == ':' {
@@ -21,6 +23,7 @@ pub fn convert_and_store(s: String, memory: &mut HashMap<u32, u32>, label_addr: 
         unsafe {INSTRUCTION_ADDRESS += 32};
     } else {
         println!("{}", s);
-        todo!() // <-- the .data section of program
+        let shift = data::insert(s, memory, unsafe{INSTRUCTION_ADDRESS});
+        unsafe {INSTRUCTION_ADDRESS += shift};
     }
 }

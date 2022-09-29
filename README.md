@@ -31,4 +31,6 @@ so we don't clear the instruction immediately)
 Notes on any changed syntax for the asm.txt file
 - there are two sections: .data, and .text, and any labels you wish to have
 - not all commands will be implemented
+- .data is only .word and .asciiz, which means I will just automatically align everything
+  to a word.
 

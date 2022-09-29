@@ -14,6 +14,9 @@ pub fn read(s: Sender<String>) -> Vec<String> {
     let mut is_data: u8 = 0;
     for line in f.lines() {
         let l = line.unwrap();
+        if l.len() == 0 {
+            continue
+        }
         let l = l.trim();
         if l == ".data" {
             is_data = 1;

@@ -8,3 +8,8 @@ main:
 L2:
   addiu $t2, $zero, 3
   addiu $v1, $zero, 11
+
+  .data
+j: .asciiz "hello world"
+i: .word -1,-2,3,4,5
+
