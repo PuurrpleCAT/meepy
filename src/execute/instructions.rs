@@ -6,6 +6,10 @@ pub fn addiu(r: &mut Registers, rs: u8, rd: u8, imm: u16) {
     r.update(rd, (r.get(rs) as u64 + imm as u64) as u32); // surprisingly as u32 ignores overflow
     r.update(32, r.get(32)+32);
 }
+pub fn add(r: &mut Registers, rs: u8, rt: u8, rd: u8) {
+    r.update(rd, r.get(rs) + r.get(rt));
+    r.update(32, r.get(32)+32);
+}
 pub fn syscall(r: &mut Registers) {
     match r.get(2) {
         10 => r.update(101, 0),

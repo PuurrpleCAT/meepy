@@ -14,9 +14,10 @@ pub fn run(registers: &mut Registers, memory: &mut HashMap<u32, u32>, u: u32) {
     }
 }
 fn op0(u: u32, registers: &mut Registers) {
-    let func = u << 27 >> 27;
+    let func = u << 26 >> 26;
     match func {
         12 => syscall(registers),
+        32 => add(registers, r1(u), r2(u), r3(u)),
         _  => exit("thy a bit noob"),
     }
 }

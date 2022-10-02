@@ -14,7 +14,14 @@ pub fn convert(s: String, label_addr: &mut HashMap<String, u32>) -> u32 {
             let rs = reg(&separate[2][..separate[2].len()-1]);
             let rt = reg(separate[3]);
             let rd = reg(&separate[1][..separate[1].len()-1]);
-            todo!()
+            binary |= rs << 21;
+            println!("{:032b}", binary);
+            binary |= rt << 16;
+            println!("{:032b}", binary);
+            binary |= rd << 11;
+            println!("{:032b}", binary);
+            binary |= func;
+        println!("{} {:032b}", s, binary);
         } else if mode == 1 { // I form   op rs rd imm
             let rs = reg(&separate[2][..separate[2].len()-1]);
             let rd = reg(&separate[1][..separate[1].len()-1]);
@@ -34,7 +41,6 @@ pub fn convert(s: String, label_addr: &mut HashMap<String, u32>) -> u32 {
 fn reg(s: &str) -> u32 {
     match s {
         "$zero" => 0,
-        "$at"   => 1,
         "$v0"   => 2,
         "$v1"   => 3,
         "$a0"   => 4,
@@ -59,12 +65,11 @@ fn reg(s: &str) -> u32 {
         "$s7"   => 23,
         "$t8"   => 24,
         "$t9"   => 25,
-        "$k0"   => 26,
-        "$k1"   => 27,
         "$gp"   => 28,
         "$sp"   => 29,
         "$fp"   => 30,
         "$ra"   => 31,
+        "$pc"   => 32,
         _       => panic!("You have used a demon register"),
     }
 }

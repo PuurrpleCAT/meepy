@@ -13,7 +13,7 @@ use std::collections::HashMap;
 fn main() {
     use crossterm::terminal::size;
     let size = size().unwrap();
-    assert!(size.1 >= 35);
+    assert!(size.1 < 37);
     let mut memory:     HashMap<u32, u32>    = HashMap::new();
     let mut label_addr: HashMap<String, u32> = HashMap::new();
     let mut registers:  Registers            = Registers::new();
@@ -34,7 +34,11 @@ impl Registers {
     }
     // creates register hashmap
     fn init(h: &mut HashMap<u8, u32>) {
-        for r in 0..32 {
+        h.insert(0, 0);
+        for r in 2..=25 {
+            h.insert(r, 0);
+        }
+        for r in 28..=32 {
             h.insert(r, 0);
         }
     }
@@ -57,16 +61,21 @@ impl Registers {
         let mut keys: Vec<&u8> = self.r.keys().collect(); 
         keys.sort_unstable();
         let mut keys = keys.iter();
-        let reg_letter = [("$at", 0, 0), ("$v", 0, 1), ("$a", 0, 3),
-                          ("$t", 0, 7), ("$s", 0, 7), ("$t", 8, 9), ("$k", 0, 1), 
+        let reg_letter = [("$v", 0, 1),("$a", 0, 3),
+                          ("$t", 0, 7), ("$s", 0, 7), ("$t", 8, 9), 
                           ("$gp", 0, 0), ("$sp", 0, 0), ("$fp", 0, 0), ("$ra", 0, 0),
                           ("$pc", 0, 0)];
         println!("$zero  00 00 00 00");
         keys.next();
         for r in reg_letter {
             if r.2 == 0 {
-                let num = self.r.get(keys.next().unwrap()).unwrap();
-                println!("{}    {}", r.0, Registers::bin_to_hex(*num));
+                let n = keys.next().unwrap();
+                let num = self.r.get(n).unwrap();
+                if n == &&32 {
+                    print!("{}    {}", r.0, Registers::bin_to_hex(*num));
+                } else {
+                    println!("{}    {}", r.0, Registers::bin_to_hex(*num));
+                }
             } else {
                 for n in r.1..=r.2 {
                     let num = self.r.get(keys.next().unwrap()).unwrap();
